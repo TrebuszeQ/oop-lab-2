@@ -13,36 +13,35 @@ class AVehicle(ABC):
     """
     Abstract vehicle class.
     """
-    _weight = None
     _speed = None
     _throttle = None
     _brake = None
     _engine = None
 
-    @property
-    def weight(self) -> float:
-        return self._weight
-
-    @weight.setter
-    def weight(self, value: float) -> None:
-        self.weight = self._validate_weight(value)
 
     @property
     def speed(self) -> float:
         return self._speed
 
     @property
-    def acceleration(self) -> float:
-        return self._acceleration
+    def throttle(self) -> Throttle:
+        return self._throttle
+
+    @property
+    def brake(self) -> Brake:
+        return self._brake
+
+    @property
+    def engine(self) -> Engine:
+        return self._engine
+
 
     def __init__(self, weight: float,
-                 acceleration: float,
                  throttle: Throttle,
                  brake: Brake,
                  engine: Engine):
         self._weight: float = self._validate_weight(weight)
         self._speed: float = 0
-        self._acceleration: float = self._validate_acceleration(acceleration)
         self._throttle: Throttle = throttle
         self._brake: Brake = brake
         self._engine: Engine = engine
@@ -78,13 +77,12 @@ class AVehicle(ABC):
     def constants(cls):
         return cls.Constants
 
-
     def accelerate(self) -> None:
         """Increases speed using throttle."""
         new_speed: float = self._speed * self._throttle.status
         self._speed = self._validate_speed(new_speed)
 
-    def brake(self) -> None:
+    def apply_brake(self) -> None:
         """Apply brakes."""
         new_speed = self._speed - self._brake.status
         self._speed = self._validate_speed(new_speed)

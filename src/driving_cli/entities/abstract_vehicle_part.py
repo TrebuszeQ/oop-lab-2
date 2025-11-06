@@ -34,6 +34,7 @@ class AVehiclePart(ABC):
     def _validate_weight(cls, weight) -> float:
         max_weight: float = cls.Constants.MASS_KG.value
         min_weight: float = cls.Constants.MIN_KG.value
+
         if weight > max_weight:
             log.warning("Vehicle part weight cannot be greater than: %s|", max_weight)
             log.warning("Vehicle part weight set to: %s|", max_weight)
@@ -49,5 +50,7 @@ class AVehiclePart(ABC):
         return cls.Constants
 
     class Constants(Enum):
-        MASS_KG = 0
-        MIN_KG = 0
+        STATUS_MIN: float = 0.0
+        STATUS_MAX: float = 0.0
+        MASS_KG: float = 0.0
+        MIN_KG: float = 0.0

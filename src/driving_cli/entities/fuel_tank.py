@@ -12,5 +12,5 @@ class FuelTank(AEnergyProvider):
         super().__init__(weight, volume)
 
     class Constants(Enum):
-        MASS_KG = 0
-        MIN_KG = 0
+        MASS_KG: float = 0
+        MIN_KG: float = 0

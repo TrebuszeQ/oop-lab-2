@@ -1,47 +1,63 @@
 """File for Engine class."""
 from logging import Logger, getLogger
 from enum import Enum
+from abstract_vehicle_part import AVehiclePart
+
 log: Logger = getLogger(__name__)
 
 
-class Engine:
-    @property
-    def weight(self) -> float:
-        return self._weight
-
-    @weight.setter
-    def weight(self, value: float) -> None:
-        self.weight = self._validate_weight(value)
+class Engine(AVehiclePart):
+    _acceleration: float = 0.0
+    _combustion: float = 0.0
 
     @property
     def acceleration(self) -> float:
         return self._acceleration
 
+    @property
+    def combustion(self) -> float:
+        return self._combustion
+
     @acceleration.setter
     def acceleration(self, value: float) -> None:
         self._acceleration = self._validate_acceleration(value)
 
-    def __init__(self, weight: float,
-                 acceleration: float):
-        self._weight = self._validate_weight(weight)
+    def __init__(self, weight: float, acceleration: float, combustion: float):
+        super().__init__(weight)
         self._acceleration = self._validate_acceleration(acceleration)
+        self._combustion = self._validate_combustion(combustion)
 
     @classmethod
     def _validate_acceleration(cls, acceleration: float):
-        max_value: float = cls.Constants.MAX_ACCELERATION.value
-        min_value: float = cls.Constants.MIN_ACCELERATION.value
+        max_value: float = cls.Constants.ACCELERATION_MAX.value
+        min_value: float = cls.Constants.ACCELERATION_MIN.value
+        param: str = "Acceleration"
 
         if acceleration > max_value:
-            log.warning("Throttle cannot be greater than: %s|", max_value)
-            log.warning("Throttle set to: %s|", max_value)
+            log.warning("%s cannot be greater than: %s|", param, max_value)
+            log.warning("%s set to: %s|", param, max_value)
             acceleration = max_value
         elif acceleration < min_value:
-            log.warning("Throttle cannot be less than: %s|", min_value)
-            log.warning("Throttle set to: %s|", min_value)
+            log.warning("%s cannot be less than: %s|", param, min_value)
+            log.warning("%s set to: %s|", param, min_value)
             acceleration = min_value
         return acceleration
 
+    @classmethod
+    def _validate_combustion(cls, combustion: float):
+        max_value: float = cls.Constants.COMBUSTION_MAX.value
+        min_value: float = cls.Constants.COMBUSTION_MIN.value
+        param: str = "Combustion"
 
+        if combustion > max_value:
+            log.warning("%s cannot be greater than: %s|", param, max_value)
+            log.warning("%s set to: %s|", param, max_value)
+            combustion = max_value
+        elif combustion < min_value:
+            log.warning("%s cannot be less than: %s|", param, min_value)
+            log.warning("%s set to: %s|", param, min_value)
+            combustion = min_value
+        return combustion
 
     @classmethod
     def constants(cls):
@@ -50,6 +66,8 @@ class Engine:
     class Constants(Enum):
         MASS_KG = 500
         MIN_KG = 10
-        MIN_ACCELERATION: float = 0.1
-        MAX_ACCELERATION: float = 1.0
+        ACCELERATION_MIN: float = 0.1
+        ACCELERATION_MAX: float = 1.0
+        COMBUSTION_MIN: float = 0.1
+        COMBUSTION_MAX: float = 100
 
