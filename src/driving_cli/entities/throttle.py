@@ -1,27 +1,14 @@
 """File for Throttle class."""
 from logging import Logger, getLogger
-
+from abstract_vehicle_part import AVehiclePart
+from enum import Enum
 log: Logger = getLogger(__name__)
 
 
-class Throttle:
-    @property
-    def weight(self) -> float:
-        return self._weight
+class Throttle(AVehiclePart):
 
-    @weight.setter
-    def weight(self, value: float) -> None:
-        self.weight = self._validate_weight(value)
-
-    @property
-    def status(self):
-        return self._status
-
-    @property
-    def step(self):
-        return self._status
-
-    def __init__(self):
+    def __init__(self, weight: float):
+        super().__init__(weight)
         self._status: float = 0.0
         self._step: float = 0.1
 
@@ -34,8 +21,8 @@ class Throttle:
         self._status = self.__validate_throttle(value)
 
     def __validate_throttle(self, throttle: float):
-        max_value: float = VehicleConstants.THROTTLE_MAX.value
-        min_value: float = VehicleConstants.THROTTLE_MIN.value
+        max_value: float = self.Constants.THROTTLE_MAX.value
+        min_value: float = self.Constants.THROTTLE_MIN.value
 
         if throttle > max_value:
             log.warning("Throttle cannot be greater than: %s|", max_value)
@@ -47,3 +34,9 @@ class Throttle:
             throttle = min_value
         self._throttle = throttle
         return throttle
+
+    class Constants(Enum):
+        MASS_KG = 500
+        MIN_KG = 200
+        THROTTLE_MAX = 0
+        THROTTLE_MIN = 0

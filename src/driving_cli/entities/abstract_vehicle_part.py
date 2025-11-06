@@ -8,6 +8,15 @@ log: Logger = getLogger(__name__)
 
 class AVehiclePart(ABC):
     _weight: float = None
+    _status: float = None
+
+    @property
+    def status(self):
+        return self._status
+
+    @property
+    def step(self):
+        return self._status
 
     @property
     def weight(self) -> float:
@@ -19,6 +28,7 @@ class AVehiclePart(ABC):
 
     def __init__(self, weight: float):
         self._weight: float = weight
+        self._status = 0.0
 
     @classmethod
     def _validate_weight(cls, weight) -> float:
