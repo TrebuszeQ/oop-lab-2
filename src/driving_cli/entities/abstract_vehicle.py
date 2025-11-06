@@ -4,6 +4,7 @@ from enum import Enum
 from logging import Logger, getLogger
 from throttle import Throttle
 from brake import Brake
+from engine import Engine
 
 log: Logger = getLogger(__name__)
 
@@ -14,9 +15,9 @@ class AVehicle(ABC):
     """
     _weight = None
     _speed = None
-    _acceleration = None
     _throttle = None
     _brake = None
+    _engine = None
 
     @property
     def weight(self) -> float:
@@ -34,31 +35,17 @@ class AVehicle(ABC):
     def acceleration(self) -> float:
         return self._acceleration
 
-    @acceleration.setter
-    def acceleration(self, value: float) -> None:
-        self._acceleration = self._validate_acceleration(value)
-
-    def __init__(self, weight: float, acceleration: float, throttle: Throttle, brake: Brake):
+    def __init__(self, weight: float,
+                 acceleration: float,
+                 throttle: Throttle,
+                 brake: Brake,
+                 engine: Engine):
         self._weight: float = self._validate_weight(weight)
         self._speed: float = 0
         self._acceleration: float = self._validate_acceleration(acceleration)
         self._throttle: Throttle = throttle
         self._brake: Brake = brake
-
-    @classmethod
-    def _validate_acceleration(cls, acceleration: float):
-        max_value: float = cls.Constants.MAX_ACCELERATION.value
-        min_value: float = cls.Constants.MIN_ACCELERATION.value
-
-        if acceleration > max_value:
-            log.warning("Throttle cannot be greater than: %s|", max_value)
-            log.warning("Throttle set to: %s|", max_value)
-            acceleration = max_value
-        elif acceleration < min_value:
-            log.warning("Throttle cannot be less than: %s|", min_value)
-            log.warning("Throttle set to: %s|", min_value)
-            acceleration = min_value
-        return acceleration
+        self._engine: Engine = engine
 
     @classmethod
     def _validate_speed(cls, speed) -> float:
@@ -99,7 +86,6 @@ class AVehicle(ABC):
 
     def brake(self) -> None:
         """Apply brakes."""
-
         new_speed = self._speed - self._brake.status
         self._speed = self._validate_speed(new_speed)
 
@@ -110,5 +96,3 @@ class AVehicle(ABC):
         MIN_KG = 200
         THROTTLE_MAX = 0
         THROTTLE_MIN = 0
-        MIN_ACCELERATION: float = 0.1
-        MAX_ACCELERATION: float = 1.0

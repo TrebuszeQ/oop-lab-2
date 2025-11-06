@@ -1,11 +1,18 @@
 """File for Throttle class."""
 from logging import Logger, getLogger
-from vehicle_constant import VehicleConstants
 
 log: Logger = getLogger(__name__)
 
 
 class Throttle:
+    @property
+    def weight(self) -> float:
+        return self._weight
+
+    @weight.setter
+    def weight(self, value: float) -> None:
+        self.weight = self._validate_weight(value)
+
     @property
     def status(self):
         return self._status
