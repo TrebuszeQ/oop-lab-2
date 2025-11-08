@@ -132,13 +132,13 @@ class AVehicle(ABC):
     def accelerate(self) -> None:
         """Increase speed using throttle and engine force."""
         gear_ratio: float = self._transmission.ratio
-        throttle_value: float = self._throttle.status
+        throttle_value: float = self._throttle.throttle_value
         self._engine.increase_combustion(throttle_value, gear_ratio)
         self._speed = self._validate_speed(self._speed + self._acceleration)
 
     def apply_brake(self) -> None:
         """Reduce speed according to brake intensity."""
-        delta = max(self._speed - self._brake.status, 0.0)
+        delta = max(self._speed - self._brake.throttle_value, 0.0)
         self._speed = self._validate_speed(delta)
 
     @abstractmethod

@@ -6,31 +6,47 @@ log: Logger = getLogger(__name__)
 
 
 class Throttle(AVehiclePart):
-    _acceleration = None
+    _throttle_value = None
+    _step = None
+
+    class Constants(Enum):
+        MASS_KG: float = 500
+        MIN_KG: float = 200
+        THROTTLE_MAX: float = 1.0
+        THROTTLE_MIN: float = 0.0
+        STEP_MAX: float = 1.0
+        STEP_MIN: float = 0.0
 
     @property
-    def acceleration(self):
-        return self._acceleration
+    def throttle_value(self):
+        """Current value of throttle"""
+        return self._throttle_value
 
-    def __init__(self, weight: float = None, acceleration: float = None):
+    @property
+    def step(self):
+        """Throttle step value."""
+        return self._step
+
+    def __init__(self, weight: float = None, step: float = None):
         super().__init__(weight)
-        self._acceleration: float = self.__validate_acceleration(acceleration)
+        self._throttle_value = self.Constants.THROTTLE_MIN.value
+        self._step: float = self.__validate_step(step)
 
     @classmethod
     def increase_throttle(cls):
-        value: float = cls._status + cls._acceleration
-        cls._status = cls.__validate_throttle(value)
+        value: float = cls._status + cls._step
+        cls._status = cls.__validate_throttle_value(value)
 
     @classmethod
-    def decrease_throttle(cls, brake_step: float):
-        value: float = cls._status - brake_step
-        cls._status = cls.__validate_throttle(value)
+    def decrease_throttle(cls):
+        value: float = cls._status - cls._step
+        cls._status = cls.__validate_throttle_value(value)
 
     @classmethod
-    def __validate_throttle(cls, throttle: float):
+    def __validate_throttle_value(cls, throttle: float):
         max_value: float = cls.Constants.THROTTLE_MAX.value
         min_value: float = cls.Constants.THROTTLE_MIN.value
-        param: str = "Throttle"
+        param: str = "Throttle value"
 
         if throttle > max_value:
             log.warning("%s cannot be greater than: %s|", param, max_value)
@@ -44,10 +60,10 @@ class Throttle(AVehiclePart):
         return throttle
 
     @classmethod
-    def __validate_acceleration(cls, throttle: float):
-        max_value: float = cls.Constants.ACCELERATION_MAX.value
-        min_value: float = cls.Constants.ACCELERATION_MIN.value
-        param: str = "Acceleration"
+    def __validate_step(cls, throttle: float):
+        max_value: float = cls.Constants.STEP_MAX.value
+        min_value: float = cls.Constants.STEP_MIN.value
+        param: str = "Throttle step"
 
         if throttle > max_value:
             log.warning("%s cannot be greater than: %s|", param, max_value)
@@ -59,11 +75,3 @@ class Throttle(AVehiclePart):
             throttle = min_value
         cls._throttle = throttle
         return throttle
-
-    class Constants(Enum):
-        MASS_KG: float = 500
-        MIN_KG: float = 200
-        THROTTLE_MAX: float = 1.0
-        THROTTLE_MIN: float = 0.0
-        ACCELERATION_MAX: float = 1.0
-        ACCELERATION_MIN: float = 0.0

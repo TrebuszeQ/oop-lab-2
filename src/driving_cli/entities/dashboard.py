@@ -26,7 +26,7 @@ class Dashboard(Observer, Generic[T]):
     def print_throttle_status(self):
         """Prints throttle status"""
         print("Throttle status: %s")
-        log.info("Throttle status: %s", self._vehicle.throttle.status)
+        log.info("Throttle status: %s", self._vehicle.throttle.throttle_value)
     #
     # def print_brake_status(self):
     #     """Prints vehicle speed"""

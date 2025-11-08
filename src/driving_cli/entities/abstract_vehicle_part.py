@@ -11,7 +11,7 @@ class AVehiclePart(ABC):
     _status: float = None
 
     @property
-    def status(self):
+    def throttle_value(self):
         return self._status
 
     @property
