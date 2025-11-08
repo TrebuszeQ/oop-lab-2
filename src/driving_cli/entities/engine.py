@@ -2,6 +2,7 @@
 from logging import Logger, getLogger
 from enum import Enum
 from abstract_vehicle_part import AVehiclePart
+from driving_cli.use_cases.validators import clamp_value
 
 log: Logger = getLogger(__name__)
 
@@ -36,40 +37,15 @@ class Engine(AVehiclePart):
 
     def __init__(self, weight: float = None, force: float = None, combustion: float = None):
         super().__init__(weight)
-        self._force = self._validate_force(force)
-        self._combustion = self._validate_combustion(combustion)
+        self._force = clamp_value(value=force,
+                                  min_value=self.Constants.FORCE_MIN.value,
+                                  max_value=self.Constants.FORCE_MAX.value,
+                                  name="Engine force")
+        self._combustion = clamp_value(value=combustion,
+                                       min_value=self.Constants.COMBUSTION_MIN.value,
+                                       max_value=self.Constants.COMBUSTION_MIN.value,
+                                       name="Engine combustion")
 
-    @classmethod
-    def _validate_force(cls, force: float):
-        max_value: float = cls.Constants.FORCE_MAX.value
-        min_value: float = cls.Constants.FORCE_MIN.value
-        param: str = "Force"
-
-        if force > max_value:
-            log.warning("%s cannot be greater than: %s|", param, max_value)
-            log.warning("%s set to: %s|", param, max_value)
-            force = max_value
-        elif force < min_value or force is None:
-            log.warning("%s cannot be less than: %s|", param, min_value)
-            log.warning("%s set to: %s|", param, min_value)
-            force = min_value
-        return force
-
-    @classmethod
-    def _validate_combustion(cls, combustion: float):
-        max_value: float = cls.Constants.COMBUSTION_MAX.value
-        min_value: float = cls.Constants.COMBUSTION_MIN.value
-        param: str = "Combustion"
-
-        if combustion > max_value:
-            log.warning("%s cannot be greater than: %s|", param, max_value)
-            log.warning("%s set to: %s|", param, max_value)
-            combustion = max_value
-        elif combustion < min_value or combustion is None:
-            log.warning("%s cannot be less than: %s|", param, min_value)
-            log.warning("%s set to: %s|", param, min_value)
-            combustion = min_value
-        return combustion
 
     @classmethod
     def increase_combustion(cls, throttle_value: float, transmission_ratio: float) -> None:
@@ -87,7 +63,10 @@ class Engine(AVehiclePart):
 
         delta = throttle_value * (1 + transmission_ratio * 0.1)
         new_combustion = cls._combustion + delta
-        cls._combustion = cls._validate_combustion(new_combustion)
+        cls._combustion = clamp_value(value=new_combustion,
+                                       min_value=cls.Constants.COMBUSTION_MIN.value,
+                                       max_value=cls.Constants.COMBUSTION_MIN.value,
+                                       name="Engine combustion")
 
         cls._update_force()
         log.info("New combustion: %s", new_combustion)
@@ -97,7 +76,10 @@ class Engine(AVehiclePart):
         """Updates force value bases on combustion."""
         k: float = cls.Constants.FORCE_MAX.value / cls.Constants.COMBUSTION_MAX.value
         delta: float = cls._combustion * k
-        cls._force = cls._validate_force(delta)
+        cls._force = clamp_value(value=delta,
+                                   min_value=cls.Constants.COMBUSTION_MIN.value,
+                                   max_value=cls.Constants.COMBUSTION_MIN.value,
+                                   name="Engine combustion")
 
     @classmethod
     def constants(cls):

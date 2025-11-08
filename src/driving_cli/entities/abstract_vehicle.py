@@ -98,12 +98,12 @@ class AVehicle(ABC):
         max_speed: float = cls.Constants.MAX_SPEED.value
         min_speed: float = cls.Constants.MIN_SPEED.value
         if speed > max_speed:
-            log.warning("Vehicle's speed is greater than: %s|", max_speed)
-            log.warning("Vehicle's speed set to: %s|", max_speed)
+            log.warning("Vehicle speed is greater than: %s", max_speed)
+            log.warning("Vehicle speed set to: %s", max_speed)
             speed = max_speed
         elif speed < 0:
-            log.warning("Vehicle's speed cannot be less than: %s|", min_speed)
-            log.warning("Vehicle's speed set to: %s|", max_speed)
+            log.warning("Vehicle speed cannot be less than: %s", min_speed)
+            log.warning("Vehicle speed set to: %s", max_speed)
         return speed
 
     @classmethod
