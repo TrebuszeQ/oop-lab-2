@@ -1,12 +1,12 @@
 """File for VehicleFactory and it's complements."""
 from logging import Logger, getLogger
 
-from driving_cli.entities.transmission import Transmission
-from fuel_car import FuelCar
-from driving_cli.entities.engine import Engine
+from driving_cli.entities.abstracts.abstract_transmission import ATransmission
+from driving_cli.entities.fuel_car import FuelCar
+from driving_cli.entities.abstracts.abstract_engine import Engine
 from driving_cli.entities.fuel_tank import FuelTank
-from throttle import Throttle
-from brake import Brake
+from driving_cli.entities.abstracts.abstract_throttle import Throttle
+from driving_cli.entities.abstracts.abstract_brake import Brake
 
 log: Logger = getLogger(__name__)
 
@@ -49,7 +49,7 @@ class VehicleFactory:
             fuel_tank_weight: float,
             fuel_tank_max_volume: float,
             transmission_weight: float,
-            transmission_ratios: list[float]
+            transmission_ratios: list[float] = None
     ) -> FuelCar:
         """
         Creates and returns FuelCar instance and its parts.
@@ -77,8 +77,8 @@ class VehicleFactory:
                           combustion=combustion),
             fuel_tank=FuelTank(weight=fuel_tank_weight,
                                max_volume=fuel_tank_max_volume),
-            transmission=Transmission(weight=transmission_weight,
-                                      ratios=transmission_ratios)
+            transmission=ATransmission(weight=transmission_weight,
+                                       ratios=transmission_ratios)
         )
 
     @staticmethod
@@ -87,7 +87,7 @@ class VehicleFactory:
                     brake: Brake = None,
                     engine: Engine = None,
                     fuel_tank: FuelTank = None,
-                    transmission: Transmission = None
+                    transmission: ATransmission = None
     ) -> FuelCar:
         """
         Creates and returns a Car instance with provided parts, or instantiates parts with default None.

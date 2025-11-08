@@ -1,11 +1,12 @@
 """File for FuelCar class."""
 from logging import Logger, getLogger
-from abstract_vehicle import AVehicle
-from driving_cli.entities.throttle import Throttle
-from driving_cli.entities.brake import Brake
-from driving_cli.entities.engine import Engine
+
+from driving_cli.entities.abstracts.abstract_vehicle import AVehicle
+from driving_cli.entities.abstracts.abstract_throttle import Throttle
+from driving_cli.entities.abstracts.abstract_brake import Brake
+from driving_cli.entities.abstracts.abstract_engine import Engine
 from driving_cli.entities.fuel_tank import FuelTank
-from driving_cli.entities.transmission import Transmission
+from driving_cli.entities.abstracts.abstract_transmission import ATransmission
 
 log: Logger = getLogger(__name__)
 
@@ -15,8 +16,9 @@ class FuelCar(AVehicle):
                  brake: Brake,
                  engine: Engine,
                  fuel_tank: FuelTank,
-                 transmission: Transmission
+                 transmission: ATransmission
                  ):
+
         super().__init__(throttle=throttle,
                          brake=brake,
                          engine=engine,

@@ -1,13 +1,15 @@
-"""File for Engine class."""
+"""File for AEngine class."""
 from logging import Logger, getLogger
 from enum import Enum
-from abstract_vehicle_part import AVehiclePart
+from abc import ABC, abstractmethod
+
+from driving_cli.entities.abstract_vehicle_part import AVehiclePart
 from driving_cli.use_cases.validators import clamp_value
 
 log: Logger = getLogger(__name__)
 
 
-class Engine(AVehiclePart):
+class Engine(AVehiclePart, ABC):
     """Represents a physical engine that provides force and consumes fuel through combustion."""
 
     _force: float = 0.0
@@ -15,8 +17,8 @@ class Engine(AVehiclePart):
     _power_output: float = 0.0
 
     class Constants(Enum):
-        MASS_KG = 500
-        MIN_KG = 10
+        WEIGHT_MIN = 1.0
+        WEIGHT_MAX = 5000.0
         FORCE_MAX = 10000
         FORCE_MIN = 1
         COMBUSTION_MIN: float = 0.1
@@ -47,8 +49,8 @@ class Engine(AVehiclePart):
                                        name="Engine combustion")
 
 
-    @classmethod
-    def increase_combustion(cls, throttle_value: float, transmission_ratio: float) -> None:
+    @abstractmethod
+    def increase_combustion(self, throttle_value: float, transmission_ratio: float) -> None:
         """
         Adjusts combustion intensity based on throttle and transmission rate.
         With combustion engine force changes.
@@ -62,26 +64,26 @@ class Engine(AVehiclePart):
             throttle_value = max(0.0, min(1.0, throttle_value))
 
         delta = throttle_value * (1 + transmission_ratio * 0.1)
-        new_combustion = cls._combustion + delta
-        cls._combustion = clamp_value(value=new_combustion,
-                                       min_value=cls.Constants.COMBUSTION_MIN.value,
-                                       max_value=cls.Constants.COMBUSTION_MIN.value,
+        new_combustion = self._combustion + delta
+        self._combustion = clamp_value(value=new_combustion,
+                                       min_value=self.Constants.COMBUSTION_MIN.value,
+                                       max_value=self.Constants.COMBUSTION_MIN.value,
                                        name="Engine combustion")
 
-        cls._update_force()
+        self._update_force()
         log.info("New combustion: %s", new_combustion)
 
-    @classmethod
-    def _update_force(cls):
+    @abstractmethod
+    def _update_force(self):
         """Updates force value bases on combustion."""
-        k: float = cls.Constants.FORCE_MAX.value / cls.Constants.COMBUSTION_MAX.value
-        delta: float = cls._combustion * k
-        cls._force = clamp_value(value=delta,
-                                   min_value=cls.Constants.COMBUSTION_MIN.value,
-                                   max_value=cls.Constants.COMBUSTION_MIN.value,
-                                   name="Engine combustion")
+        k: float = self.Constants.FORCE_MAX.value / self.Constants.COMBUSTION_MAX.value
+        delta: float = self._combustion * k
+        self._force = clamp_value(value=delta,
+                                  min_value=self.Constants.COMBUSTION_MIN.value,
+                                  max_value=self.Constants.COMBUSTION_MIN.value,
+                                  name="Engine combustion")
 
-    @classmethod
-    def constants(cls):
-        return cls.Constants
+    @abstractmethod
+    def constants(self):
+        return self.Constants
 
