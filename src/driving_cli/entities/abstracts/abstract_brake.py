@@ -9,7 +9,7 @@ from driving_cli.use_cases.validators import clamp_value
 log: Logger = getLogger(__name__)
 
 
-class Brake(AVehiclePart, ABC):
+class ABrake(AVehiclePart, ABC):
     _effectiveness = 0.0
     _brake_value = 0.0
 

@@ -3,10 +3,10 @@ from logging import Logger, getLogger
 
 from driving_cli.entities.abstracts.abstract_transmission import ATransmission
 from driving_cli.entities.fuel_car import FuelCar
-from driving_cli.entities.abstracts.abstract_engine import Engine
+from driving_cli.entities.abstracts.abstract_engine import AEngine
 from driving_cli.entities.fuel_tank import FuelTank
-from driving_cli.entities.abstracts.abstract_throttle import Throttle
-from driving_cli.entities.abstracts.abstract_brake import Brake
+from driving_cli.entities.abstracts.abstract_throttle import AThrottle
+from driving_cli.entities.abstracts.abstract_brake import ABrake
 
 log: Logger = getLogger(__name__)
 
@@ -68,13 +68,13 @@ class VehicleFactory:
         """
         log.info("Producing FuelCar and it's parts.")
         return FuelCar(
-            throttle=Throttle(weight=throttle_weight,
-                              step=throttle_step),
-            brake=Brake(weight=brake_weight,
-                        effectiveness=brake_effectiveness),
-            engine=Engine(weight=engine_weight,
-                          force=engine_force,
-                          combustion=combustion),
+            throttle=AThrottle(weight=throttle_weight,
+                               step=throttle_step),
+            brake=ABrake(weight=brake_weight,
+                         effectiveness=brake_effectiveness),
+            engine=AEngine(weight=engine_weight,
+                           force=engine_force,
+                           combustion=combustion),
             fuel_tank=FuelTank(weight=fuel_tank_weight,
                                max_volume=fuel_tank_max_volume),
             transmission=ATransmission(weight=transmission_weight,
@@ -83,9 +83,9 @@ class VehicleFactory:
 
     @staticmethod
     def produce_fuel_car_from_parts(
-                    throttle: Throttle = None,
-                    brake: Brake = None,
-                    engine: Engine = None,
+                    throttle: AThrottle = None,
+                    brake: ABrake = None,
+                    engine: AEngine = None,
                     fuel_tank: FuelTank = None,
                     transmission: ATransmission = None
     ) -> FuelCar:

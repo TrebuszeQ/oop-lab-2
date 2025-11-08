@@ -9,7 +9,7 @@ from driving_cli.use_cases.validators import clamp_value
 log: Logger = getLogger(__name__)
 
 
-class Engine(AVehiclePart, ABC):
+class AEngine(AVehiclePart, ABC):
     """Represents a physical engine that provides force and consumes fuel through combustion."""
 
     _force: float = 0.0

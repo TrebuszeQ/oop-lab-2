@@ -5,9 +5,9 @@ from typing import Type
 from logging import Logger, getLogger
 
 from driving_cli.entities.abstracts.abstract_transmission import ATransmission
-from driving_cli.entities.abstracts.abstract_throttle import Throttle
-from driving_cli.entities.abstracts.abstract_brake import Brake
-from driving_cli.entities.abstracts.abstract_engine import Engine
+from driving_cli.entities.abstracts.abstract_throttle import AThrottle
+from driving_cli.entities.abstracts.abstract_brake import ABrake
+from driving_cli.entities.abstracts.abstract_engine import AEngine
 from driving_cli.entities.abstracts.abstract_energy_provider import AEnergyProvider
 from driving_cli.use_cases.validators import clamp_value
 
@@ -22,9 +22,9 @@ class AVehicle(ABC):
     _weight: float = 0.0
     _speed: float = 0.0
     _acceleration: float = 0.0
-    _throttle: Throttle = None
-    _brake: Brake = None
-    _engine: Engine = None
+    _throttle: AThrottle = None
+    _brake: ABrake = None
+    _engine: AEngine = None
     _energy_provider: Type[AEnergyProvider] = None
     _transmission: ATransmission = None
 
@@ -53,15 +53,15 @@ class AVehicle(ABC):
         return self._acceleration
 
     @property
-    def throttle(self) -> Throttle:
+    def throttle(self) -> AThrottle:
         return self._throttle
 
     @property
-    def brake(self) -> Brake:
+    def brake(self) -> ABrake:
         return self._brake
 
     @property
-    def engine(self) -> Engine:
+    def engine(self) -> AEngine:
         return self._engine
 
     @property
@@ -77,9 +77,9 @@ class AVehicle(ABC):
         """Sum of weight of vehicle part."""
         return self._weight
 
-    def __init__(self, throttle: Throttle,
-                 brake: Brake,
-                 engine: Engine,
+    def __init__(self, throttle: AThrottle,
+                 brake: ABrake,
+                 engine: AEngine,
                  energy_provider: Type[AEnergyProvider],
                  transmission: ATransmission):
         self._weight: float = (self.throttle.weight +
@@ -87,9 +87,9 @@ class AVehicle(ABC):
                 self.engine.weight +
                 self.energy_provider.weight)
         self._speed: float = 0
-        self._throttle: Throttle = throttle
-        self._brake: Brake = brake
-        self._engine: Engine = engine
+        self._throttle: AThrottle = throttle
+        self._brake: ABrake = brake
+        self._engine: AEngine = engine
         self._energy_provider: Type[AEnergyProvider] = energy_provider
         self._transmission: ATransmission = transmission
 

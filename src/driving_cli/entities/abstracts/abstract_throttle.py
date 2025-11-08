@@ -9,7 +9,7 @@ from driving_cli.use_cases.validators import clamp_value
 log: Logger = getLogger(__name__)
 
 
-class Throttle(AVehiclePart, ABC):
+class AThrottle(AVehiclePart, ABC):
     _throttle_value = 0.0
     _step = 0.0
 
