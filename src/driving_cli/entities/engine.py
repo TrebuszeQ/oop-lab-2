@@ -11,6 +11,7 @@ class Engine(AVehiclePart):
 
     _force: float = 0.0
     _combustion: float = 0.0
+    _power_output: float = 0.0
 
     class Constants(Enum):
         MASS_KG = 500
@@ -20,6 +21,10 @@ class Engine(AVehiclePart):
         COMBUSTION_MIN: float = 0.1
         COMBUSTION_MAX: float = 100
 
+    @property
+    def power_output(self) -> float:
+        """Power output based on combustion efficiency."""
+        return self._force * self._combustion
 
     @property
     def force(self) -> float:
@@ -67,5 +72,34 @@ class Engine(AVehiclePart):
         return combustion
 
     @classmethod
+    def increase_combustion(cls, throttle_value: float, transmission_ratio: float) -> None:
+        """
+        Adjusts combustion intensity based on throttle and transmission rate.
+        With combustion engine force changes.
+
+        :param throttle_value: Status of throttle input.
+        :param transmission_ratio: Torque multiplier.
+        """
+        log.info("Increasing combustion.")
+        if throttle_value < 0 or throttle_value > 1:
+            log.warning("Throttle status out of 0-1 range: %s", throttle_value)
+            throttle_value = max(0.0, min(1.0, throttle_value))
+
+        delta = throttle_value * (1 + transmission_ratio * 0.1)
+        new_combustion = cls._combustion + delta
+        cls._combustion = cls._validate_combustion(new_combustion)
+
+        cls._update_force()
+        log.info("New combustion: %s", new_combustion)
+
+    @classmethod
+    def _update_force(cls):
+        """Updates force value bases on combustion."""
+        k: float = cls.Constants.FORCE_MAX.value / cls.Constants.COMBUSTION_MAX.value
+        delta: float = cls._combustion * k
+        cls._force = cls._validate_force(delta)
+
+    @classmethod
     def constants(cls):
         return cls.Constants
+

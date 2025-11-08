@@ -40,8 +40,9 @@ class AVehicle(ABC):
         if self.weight <= 0:
             log.warning("Invalid weight: %s", self.weight)
             return 0.0
-        acceleration: float = self._engine.force / self.weight
-        self._acceleration =  self._validate_acceleration(acceleration)
+        effective_force = self.engine.force * self.engine.combustion
+        raw_acceleration: float = effective_force / self.weight
+        self._acceleration =  self._validate_acceleration(raw_acceleration)
         return self._acceleration
 
     @property
@@ -130,8 +131,10 @@ class AVehicle(ABC):
 
     def accelerate(self) -> None:
         """Increase speed using throttle and engine force."""
-        delta: float = self._throttle.status * self._acceleration
-        self._speed = self._validate_speed(self._speed + delta)
+        gear_ratio: float = self._transmission.ratio
+        throttle_value: float = self._throttle.status
+        self._engine.increase_combustion(throttle_value, gear_ratio)
+        self._speed = self._validate_speed(self._speed + self._acceleration)
 
     def apply_brake(self) -> None:
         """Reduce speed according to brake intensity."""
