@@ -7,10 +7,13 @@ log: Logger = getLogger(__name__)
 
 
 class FuelTank(AEnergyProvider):
+    @property
+    def weight(self) -> float:
+        return self._weight * self._volume
 
-    def __init__(self, weight: float = None, volume: float = None):
-        super().__init__(weight, volume)
+    def __init__(self, weight: float = None, max_volume: float = None):
+        super().__init__(weight, max_volume)
 
     class Constants(Enum):
-        MASS_KG: float = 0
+        MASS_KG: float = 1000
         MIN_KG: float = 0

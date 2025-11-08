@@ -33,8 +33,16 @@ def real_time_loop(dt: float):
     # choose type of vehicle
 
     vehicle_factory = VehicleFactory()
-    vehicle: Type[Vehicle] = vehicle_factory.produce_car(2000, 0.2)
-
+    vehicle: Type[Vehicle] = vehicle_factory.produce_fuel_car_and_parts(throttle_weight=200,
+                                                                        throttle=0.2,
+                                                                        brake_weight=200,
+                                                                        brake_effectiveness=0.3,
+                                                                        engine_weight=500,
+                                                                        acceleration=0.1,
+                                                                        combustion=10,
+                                                                        fuel_tank_weight=200,
+                                                                        fuel_tank_volume=200,
+                                                                        )
     while True:
         now = time.perf_counter()
         elapsed = now - last_time

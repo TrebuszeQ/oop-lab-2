@@ -7,41 +7,48 @@ log: Logger = getLogger(__name__)
 
 
 class Engine(AVehiclePart):
-    _acceleration: float = 0.0
+    """Represents a physical engine that provides force and consumes fuel through combustion."""
+
+    _force: float = 0.0
     _combustion: float = 0.0
 
+    class Constants(Enum):
+        MASS_KG = 500
+        MIN_KG = 10
+        FORCE_MAX = 10000
+        FORCE_MIN = 1
+        COMBUSTION_MIN: float = 0.1
+        COMBUSTION_MAX: float = 100
+
+
     @property
-    def acceleration(self) -> float:
-        return self._acceleration
+    def force(self) -> float:
+        return self._force
 
     @property
     def combustion(self) -> float:
         return self._combustion
 
-    @acceleration.setter
-    def acceleration(self, value: float) -> None:
-        self._acceleration = self._validate_acceleration(value)
-
-    def __init__(self, weight: float = None, acceleration: float = None, combustion: float = None):
+    def __init__(self, weight: float = None, force: float = None, combustion: float = None):
         super().__init__(weight)
-        self._acceleration = self._validate_acceleration(acceleration)
+        self._force = self._validate_force(force)
         self._combustion = self._validate_combustion(combustion)
 
     @classmethod
-    def _validate_acceleration(cls, acceleration: float):
-        max_value: float = cls.Constants.ACCELERATION_MAX.value
-        min_value: float = cls.Constants.ACCELERATION_MIN.value
-        param: str = "Acceleration"
+    def _validate_force(cls, force: float):
+        max_value: float = cls.Constants.FORCE_MAX.value
+        min_value: float = cls.Constants.FORCE_MIN.value
+        param: str = "Force"
 
-        if acceleration > max_value:
+        if force > max_value:
             log.warning("%s cannot be greater than: %s|", param, max_value)
             log.warning("%s set to: %s|", param, max_value)
-            acceleration = max_value
-        elif acceleration < min_value or acceleration is None:
+            force = max_value
+        elif force < min_value or force is None:
             log.warning("%s cannot be less than: %s|", param, min_value)
             log.warning("%s set to: %s|", param, min_value)
-            acceleration = min_value
-        return acceleration
+            force = min_value
+        return force
 
     @classmethod
     def _validate_combustion(cls, combustion: float):
@@ -62,12 +69,3 @@ class Engine(AVehiclePart):
     @classmethod
     def constants(cls):
         return cls.Constants
-
-    class Constants(Enum):
-        MASS_KG = 500
-        MIN_KG = 10
-        ACCELERATION_MIN: float = 0.1
-        ACCELERATION_MAX: float = 1.0
-        COMBUSTION_MIN: float = 0.1
-        COMBUSTION_MAX: float = 100
-
