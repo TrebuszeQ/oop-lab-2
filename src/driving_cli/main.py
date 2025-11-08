@@ -4,10 +4,10 @@ from curses import wrapper, noecho, initscr, napms, KEY_UP, KEY_DOWN
 from typing import Type
 
 from driving_cli.entities.abstracts.abstract_vehicle import AVehicle
-from driving_cli.entities.dashboard import Dashboard
-from driving_cli.entities.fuel_car import FuelCar
+from driving_cli.entities.concretes.dashboard import Dashboard
+from driving_cli.entities.concretes.fuel_car import FuelCar
 from driving_cli.drivers.cli_steering import CliSteering
-from driving_cli.entities.vehicle_factory import VehicleFactory
+from driving_cli.entities.concretes.vehicle_factory import VehicleFactory
 
 log: Logger = getLogger(__name__)
 

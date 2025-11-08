@@ -5,7 +5,7 @@ from enum import Enum
 from array import array
 from collections.abc import MutableSequence
 
-from driving_cli.entities.abstract_vehicle_part import AVehiclePart
+from driving_cli.entities.abstracts.abstract_vehicle_part import AVehiclePart
 from driving_cli.use_cases.validators import clamp_value
 
 log: Logger = getLogger(__name__)

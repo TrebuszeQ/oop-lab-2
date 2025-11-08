@@ -2,9 +2,9 @@
 from logging import Logger, getLogger
 
 from driving_cli.entities.abstracts.abstract_transmission import ATransmission
-from driving_cli.entities.fuel_car import FuelCar
+from driving_cli.entities.concretes.fuel_car import FuelCar
 from driving_cli.entities.abstracts.abstract_engine import AEngine
-from driving_cli.entities.fuel_tank import FuelTank
+from driving_cli.entities.concretes.fuel_tank import FuelTank
 from driving_cli.entities.abstracts.abstract_throttle import AThrottle
 from driving_cli.entities.abstracts.abstract_brake import ABrake
 
