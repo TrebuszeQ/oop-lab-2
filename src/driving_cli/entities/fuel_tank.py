@@ -8,7 +8,7 @@ log: Logger = getLogger(__name__)
 
 class FuelTank(AEnergyProvider):
 
-    def __init__(self, weight: float, volume: float):
+    def __init__(self, weight: float = None, volume: float = None):
         super().__init__(weight, volume)
 
     class Constants(Enum):

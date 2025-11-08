@@ -8,24 +8,25 @@ log: Logger = getLogger(__name__)
 
 class Brake(AVehiclePart):
 
-    def __init__(self, weight: float, effectiveness: float):
+    def __init__(self, weight: float = None, effectiveness: float = None):
         super().__init__(weight)
         self.effectiveness = effectiveness
 
     @classmethod
     def _validate_effectiveness(cls, effectiveness: float):
-        max_value: float = cls.Constants.VOLUME_MAX.value
-        min_value: float = cls.Constants.VOLUME_MIN.value
+        max_value: float = cls.Constants.BRAKE_EFFECTIVENESS_MAX.value
+        min_value: float = cls.Constants.BRAKE_EFFECTIVENESS_MIN.value
+        param: str = "Effectiveness"
 
-        if volume > max_value:
-            log.warning("Volume cannot be greater than: %s|", max_value)
-            log.warning("Volume set to: %s|", max_value)
-            volume: float = max_value
-        elif volume < min_value:
-            log.warning("Volume cannot be less than: %s|", min_value)
-            log.warning("Volume set to: %s|", min_value)
-            volume: float = min_value
-        cls._volume = volume
+        if effectiveness > max_value:
+            log.warning("%s cannot be greater than: %s|", param, max_value)
+            log.warning("%s set to: %s|", param, max_value)
+            effectiveness: float = max_value
+        elif effectiveness < min_value or effectiveness is None:
+            log.warning("%s cannot be less than: %s|", param, min_value)
+            log.warning("%s set to: %s|", param, min_value)
+            effectiveness: float = min_value
+        cls._effectiveness = effectiveness
 
     class Constants(Enum):
         BRAKE_EFFECTIVENESS_MIN = 80

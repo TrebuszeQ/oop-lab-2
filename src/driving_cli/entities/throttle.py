@@ -12,7 +12,7 @@ class Throttle(AVehiclePart):
     def acceleration(self):
         return self._acceleration
 
-    def __init__(self, weight: float, acceleration: float):
+    def __init__(self, weight: float = None, acceleration: float = None):
         super().__init__(weight)
         self._acceleration: float = self.__validate_acceleration(acceleration)
 
@@ -36,7 +36,7 @@ class Throttle(AVehiclePart):
             log.warning("%s cannot be greater than: %s|", param, max_value)
             log.warning("%s set to: %s|", param, max_value)
             throttle = max_value
-        elif throttle < min_value:
+        elif throttle < min_value or throttle is None:
             log.warning("%s cannot be less than: %s|", param, min_value)
             log.warning("%s set to: %s|", param, min_value)
             throttle = min_value

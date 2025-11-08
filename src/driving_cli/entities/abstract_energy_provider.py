@@ -13,7 +13,7 @@ class AEnergyProvider(AVehiclePart, ABC):
     def volume(self) -> float:
         return self._volume
 
-    def __init__(self, weight: float, volume: float):
+    def __init__(self, weight: float = None, volume: float = None):
         super().__init__(weight)
         self._volume = volume
 
@@ -21,17 +21,17 @@ class AEnergyProvider(AVehiclePart, ABC):
     def _validate_volume(cls, volume: float):
         max_value: float = cls.Constants.VOLUME_MAX.value
         min_value: float = cls.Constants.VOLUME_MIN.value
+        param: str = "Volume"
 
         if volume > max_value:
-            log.warning("Volume cannot be greater than: %s|", max_value)
-            log.warning("Volume set to: %s|", max_value)
+            log.warning("%s cannot be greater than: %s|", param, max_value)
+            log.warning("%s set to: %s|", param, max_value)
             volume: float = max_value
-        elif volume < min_value:
-            log.warning("Volume cannot be less than: %s|", min_value)
-            log.warning("Volume set to: %s|", min_value)
+        elif volume < min_value or volume is None:
+            log.warning("%s cannot be less than: %s|", param, min_value)
+            log.warning("%s set to: %s|", param, min_value)
             volume: float = min_value
         cls._volume = volume
-
 
     @classmethod
     def decrease_volume(cls, combustion: float):

@@ -1,6 +1,7 @@
 import time
 from logging import Logger, getLogger
 from curses import wrapper, noecho, initscr, cbreak, napms, KEY_UP
+from typing import Type
 
 from entities.cli_steering import CliSteering
 from entities.vehicle_factory import VehicleFactory
@@ -32,7 +33,7 @@ def real_time_loop(dt: float):
     # choose type of vehicle
 
     vehicle_factory = VehicleFactory()
-    vehicle: Vehicle = vehicle_factory.produce_car(2000, 0.2)
+    vehicle: Type[Vehicle] = vehicle_factory.produce_car(2000, 0.2)
 
     while True:
         now = time.perf_counter()

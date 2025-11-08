@@ -26,7 +26,7 @@ class AVehiclePart(ABC):
     def weight(self, value: float) -> None:
         self.weight = self._validate_weight(value)
 
-    def __init__(self, weight: float):
+    def __init__(self, weight: float = None):
         self._weight: float = weight
         self._status = 0.0
 
@@ -36,12 +36,12 @@ class AVehiclePart(ABC):
         min_weight: float = cls.Constants.MIN_KG.value
 
         if weight > max_weight:
-            log.warning("Vehicle part weight cannot be greater than: %s|", max_weight)
-            log.warning("Vehicle part weight set to: %s|", max_weight)
+            log.warning("Vehicle part's weight cannot be greater than: %s|", max_weight)
+            log.warning("Vehicle part's weight set to: %s|", max_weight)
             weight = max_weight
-        elif weight < 0:
-            log.warning("Vehicle part weight cannot be less than: %s|", min_weight)
-            log.warning("Vehicle part weight set to: %s|", min_weight)
+        elif weight < 0 or weight is None:
+            log.warning("Vehicle part's weight cannot be less than: %s|", min_weight)
+            log.warning("Vehicle part's weight set to: %s|", min_weight)
             weight = min_weight
         return weight
 

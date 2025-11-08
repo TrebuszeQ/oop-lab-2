@@ -22,7 +22,7 @@ class Engine(AVehiclePart):
     def acceleration(self, value: float) -> None:
         self._acceleration = self._validate_acceleration(value)
 
-    def __init__(self, weight: float, acceleration: float, combustion: float):
+    def __init__(self, weight: float = None, acceleration: float = None, combustion: float = None):
         super().__init__(weight)
         self._acceleration = self._validate_acceleration(acceleration)
         self._combustion = self._validate_combustion(combustion)
@@ -37,7 +37,7 @@ class Engine(AVehiclePart):
             log.warning("%s cannot be greater than: %s|", param, max_value)
             log.warning("%s set to: %s|", param, max_value)
             acceleration = max_value
-        elif acceleration < min_value:
+        elif acceleration < min_value or acceleration is None:
             log.warning("%s cannot be less than: %s|", param, min_value)
             log.warning("%s set to: %s|", param, min_value)
             acceleration = min_value
@@ -53,7 +53,7 @@ class Engine(AVehiclePart):
             log.warning("%s cannot be greater than: %s|", param, max_value)
             log.warning("%s set to: %s|", param, max_value)
             combustion = max_value
-        elif combustion < min_value:
+        elif combustion < min_value or combustion is None:
             log.warning("%s cannot be less than: %s|", param, min_value)
             log.warning("%s set to: %s|", param, min_value)
             combustion = min_value
