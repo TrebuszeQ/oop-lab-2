@@ -18,6 +18,6 @@ class Brake(AVehiclePart):
     def __init__(self, weight: float = None, effectiveness: float = None):
         super().__init__(weight)
         self.effectiveness = clamp_value(value=effectiveness,
-                                       min_value=self.Constants.BRAKE_EFFECTIVENESS_MIN.value,
-                                       max_value=self.Constants.BRAKE_EFFECTIVENESS_MAX.value,
-                                       name="Brake effectiveness")
+                                         min_value=self.Constants.BRAKE_EFFECTIVENESS_MIN.value,
+                                         max_value=self.Constants.BRAKE_EFFECTIVENESS_MAX.value,
+                                         name="Brake effectiveness")

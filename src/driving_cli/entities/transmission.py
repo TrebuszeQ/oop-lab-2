@@ -42,9 +42,9 @@ class Transmission(AVehiclePart):
         """Number of current gear"""
         return self._current_gear
 
-    def __init__(self, weight: float, ratios: list[float]):
+    def __init__(self, weight: float, ratios: list[float] = ()):
         super().__init__(weight)
-        self._ratios: ArrayType[float] = self._validate_ratios(ratios)
+        self._ratios: ArrayType[float] = self._validate_ratios(ratios or self._generate_default_ratios())
         self._current_gear: int = 0
 
     @classmethod
@@ -74,7 +74,7 @@ class Transmission(AVehiclePart):
         log.info("Current gears ratio: %s", cls._ratio)
 
     @classmethod
-    def _generate_default_ration(cls) -> ArrayType[float]:
+    def _generate_default_ratios(cls) -> ArrayType[float]:
         """Generates default evenly spaced gear rations."""
         max_ratio = cls.Constants.RATIO_MAX.value
         min_ratio = cls.Constants.RATIO_MIN.value

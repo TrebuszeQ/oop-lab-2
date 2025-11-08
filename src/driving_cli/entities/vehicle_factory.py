@@ -1,6 +1,7 @@
 """File for VehicleFactory and it's complements."""
 from logging import Logger, getLogger
 
+from driving_cli.entities.transmission import Transmission
 from fuel_car import FuelCar
 from driving_cli.entities.engine import Engine
 from driving_cli.entities.fuel_tank import FuelTank
@@ -39,37 +40,45 @@ class VehicleFactory:
     @staticmethod
     def produce_fuel_car_and_parts(
             throttle_weight: float,
-            acceleration: float,
+            throttle_step: float,
             brake_weight: float,
             brake_effectiveness: float,
             engine_weight: float,
+            engine_force: float,
             combustion: float,
             fuel_tank_weight: float,
-            fuel_tank_max_volume: float
-            ) -> FuelCar:
+            fuel_tank_max_volume: float,
+            transmission_weight: float,
+            transmission_ratios: list[float]
+    ) -> FuelCar:
         """
         Creates and returns FuelCar instance and its parts.
         :param throttle_weight: Weight of the throttle.
-        :param acceleration: Throttle acceleration step.
+        :param throttle_step: Throttle step value.
         :param brake_weight: Weight of the brakes.
         :param brake_effectiveness: Effectiveness of the brakes.
         :param engine_weight: Weight of the engine.
-        :param acceleration: Acceleration of the engine.
+        :param engine_force: Force of the engine.
         :param combustion: Combustion of the engine.
         :param fuel_tank_weight: Weight of the fuel tank.
         :param fuel_tank_max_volume: Maximum volume of the fuel tank.
+        :param transmission_weight: Weight of the transmission.
+        :param transmission_ratios: Ratios of the transmission. If None, defaults would be generated.
         :return: Instance of the FuelCar.
         """
         log.info("Producing FuelCar and it's parts.")
         return FuelCar(
             throttle=Throttle(weight=throttle_weight,
-                              acceleration=acceleration),
+                              step=throttle_step),
             brake=Brake(weight=brake_weight,
                         effectiveness=brake_effectiveness),
             engine=Engine(weight=engine_weight,
+                          force=engine_force,
                           combustion=combustion),
             fuel_tank=FuelTank(weight=fuel_tank_weight,
-                               max_volume=fuel_tank_max_volume)
+                               max_volume=fuel_tank_max_volume),
+            transmission=Transmission(weight=transmission_weight,
+                                      ratios=transmission_ratios)
         )
 
     @staticmethod
@@ -77,21 +86,26 @@ class VehicleFactory:
                     throttle: Throttle = None,
                     brake: Brake = None,
                     engine: Engine = None,
-                    fuel_tank: FuelTank = None) -> FuelCar:
+                    fuel_tank: FuelTank = None,
+                    transmission: Transmission = None
+    ) -> FuelCar:
         """
         Creates and returns a Car instance with provided parts, or instantiates parts with default None.
         :param throttle: Throttle instance or None for defaults.
         :param brake: Brake instance or None for the defaults.
         :param engine: Engine instance or None for the defaults.
         :param fuel_tank: FuelTank instance or None for the defaults.
+        :param fuel_tank: Transmission instance or None for the defaults.
+        :param transmission: Transmission instance or None for the defaults.
         :return: Instance of the FuelCar.
         """
         log.info("Producing FuelCar")
         return FuelCar(
-            throttle,
-            brake,
-            engine,
-            fuel_tank
+            throttle=throttle,
+            brake=brake,
+            engine=engine,
+            fuel_tank=fuel_tank,
+            transmission=transmission
         )
 
     # @staticmethod
