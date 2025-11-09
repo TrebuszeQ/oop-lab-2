@@ -2,7 +2,6 @@
 from abc import ABC
 from enum import Enum
 from typing import Type
-from logging import Logger, getLogger
 
 from driving_cli.entities.abstracts.abstract_transmission import ATransmission
 from driving_cli.entities.abstracts.abstract_throttle import AThrottle
@@ -11,8 +10,6 @@ from driving_cli.entities.abstracts.abstract_engine import AEngine
 from driving_cli.entities.abstracts.abstract_energy_provider import AEnergyProvider
 from driving_cli.use_cases.validators import clamp_value
 
-
-log: Logger = getLogger(__name__)
 
 
 class AVehicle(ABC):
@@ -96,7 +93,7 @@ class AVehicle(ABC):
     # classify_by_weight()
     # vehicle_types
 
-    @classmethod
+    @abs
     def constants(cls):
         return cls.Constants
 

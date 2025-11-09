@@ -1,12 +1,9 @@
 """File for AThrottle class."""
-from logging import Logger, getLogger
 from abc import ABC, abstractmethod
 from enum import Enum
 
 from driving_cli.entities.abstracts.abstract_vehicle_part import AVehiclePart
 from driving_cli.use_cases.validators import clamp_value
-
-log: Logger = getLogger(__name__)
 
 
 class AThrottle(AVehiclePart, ABC):
@@ -31,8 +28,8 @@ class AThrottle(AVehiclePart, ABC):
         """Throttle step value."""
         return self._step
 
-    def __init__(self, weight: float = None,
-                 step: float = None):
+    def __init__(self, weight: float,
+                 step: float):
         super().__init__(weight)
         self._throttle_value = self.Constants.THROTTLE_MIN.value
         self._step: float = clamp_value(value=step,
@@ -43,22 +40,14 @@ class AThrottle(AVehiclePart, ABC):
     @abstractmethod
     def increase_throttle(self):
         """Increases throttle by a step."""
-        self.reset_throttle()
-        value: float = self._throttle_value + self._step
-        self._throttle_value = clamp_value(value=value,
-                                           min_value=self.Constants.THROTTLE_MIN.value,
-                                           max_value=self.Constants.THROTTLE_MAX.value,
-                                           name="Throttle value")
+        pass
 
     @abstractmethod
     def decrease_throttle(self):
         """Decreases throttle by a step."""
-        value: float = self._throttle_value - self._step
-        self._throttle_value = clamp_value(value=value,
-                                           min_value=self.Constants.THROTTLE_MIN.value,
-                                           max_value=self.Constants.THROTTLE_MAX.value,
-                                           name="Throttle value")
+        pass
 
     @abstractmethod
     def reset_throttle(self):
-        self._throttle_value = self.Constants.THROTTLE_MIN.value
+        """Resets throttle value to minimum."""
+        pass

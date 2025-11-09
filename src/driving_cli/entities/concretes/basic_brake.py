@@ -1,13 +1,15 @@
-"""File for ABrake class."""
+"""File for BasicBrake class."""
+from logging import Logger, getLogger
 from enum import Enum
-from abc import ABC, abstractmethod
 
+from driving_cli.entities.abstracts.abstract_brake import ABrake
 from driving_cli.entities.abstracts.abstract_vehicle_part import AVehiclePart
 from driving_cli.use_cases.validators import clamp_value
 
+log: Logger = getLogger(__name__)
 
 
-class ABrake(AVehiclePart, ABC):
+class BasicBrake(ABrake):
     _effectiveness = 0.0
     _brake_value = 0.0
 
@@ -28,21 +30,26 @@ class ABrake(AVehiclePart, ABC):
         return self._brake_value
 
     def __init__(self, weight: float = None, effectiveness: float = None):
-        super().__init__(weight)
+        super().__init__(weight, effectiveness)
         self._brake_value = self.Constants.BRAKE_VALUE_MIN.value
         self.effectiveness = clamp_value(value=effectiveness,
                                          min_value=self.Constants.BRAKE_EFFECTIVENESS_MIN.value,
                                          max_value=self.Constants.BRAKE_EFFECTIVENESS_MAX.value,
                                          name="Brake effectiveness")
 
-    @abstractmethod
     def engage_brake(self):
-       pass
+        value: float = self._brake_value + self._effectiveness
+        self._brake_value = clamp_value(value=value,
+                                        min_value=self.Constants.BRAKE_VALUE_MIN.value,
+                                        max_value=self.Constants.BRAKE_VALUE_MAX.value,
+                                        name="Brake value")
 
-    @abstractmethod
     def disengage_brake(self):
-        pass
+        value: float = self._brake_value - self._effectiveness
+        self._brake_value = clamp_value(value=value,
+                                        min_value=self.Constants.BRAKE_VALUE_MIN.value,
+                                        max_value=self.Constants.BRAKE_VALUE_MAX.value,
+                                        name="Brake value")
 
-    @abstractmethod
     def reset_brake(self):
-        pass
+        self._brake_value = self.Constants.BRAKE_VALUE_MIN.value
