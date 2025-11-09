@@ -30,7 +30,6 @@ class BasicThrottle(AThrottle):
 
     def increase_throttle(self):
         """Increases throttle by a step."""
-        self.reset_throttle()
         value: float = self._throttle_value + self._step
         self._throttle_value = clamp_value(value=value,
                                            min_value=self.Constants.THROTTLE_MIN.value,
@@ -46,4 +45,5 @@ class BasicThrottle(AThrottle):
                                            name="Throttle value")
 
     def reset_throttle(self):
+        """Resets throttle value to minimal value."""
         self._throttle_value = self.Constants.THROTTLE_MIN.value

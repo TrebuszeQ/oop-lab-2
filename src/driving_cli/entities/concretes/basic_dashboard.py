@@ -38,5 +38,11 @@ class Dashboard(ADashboard):
     def print_brake_status(self):
         """Prints vehicle brake status."""
         value: float = self._vehicle.brake.brake_value
-        print("Throttle status: ", value)
-        log.info("Throttle status: %s", value)
+        print("Brake status: ", value)
+        log.info("Brake status: %s", value)
+
+    def print_combustion(self):
+        """Prints combustion value."""
+        value: float = self._vehicle.engine.combustion
+        print("Combustion: ", value)
+        log.info("Combustion: %s", value)

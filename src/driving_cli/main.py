@@ -22,7 +22,7 @@ def main():
         throttle=BasicThrottle(weight=200,
                                step=0.1),
         brake=BasicBrake(weight=200,
-                         effectiveness=0.1),
+                         effectiveness=500),
         engine=BasicEngine(weight=1000,
                            force=100,
                            combustion=10),

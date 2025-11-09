@@ -63,18 +63,27 @@ class AVehicle(ABC):
 
     @property
     def acceleration(self) -> float:
+        """Calculates acceleration based on engine force and vehicle weight."""
         if self.weight <= 0:
             log.warning("Invalid weight: %s", self.weight)
             return 0.0
         #effective_force = self.engine.force - frictions
-        effective_force = self.engine.force
+
+        effective_force = self.engine.force - self.braking_force
         raw_acceleration: float = effective_force / self.weight
-        self._acceleration =  clamp_value(value=raw_acceleration,
-                                          min_value=self.Constants.ACCELERATION_MIN.value,
-                                          max_value=self.Constants.ACCELERATION_MAX.value,
-                                          name="Acceleration"
-                                          )
+        # self._acceleration =  clamp_value(value=raw_acceleration,
+        #                                   min_value=self.Constants.ACCELERATION_MIN.value,
+        #                                   max_value=self.Constants.ACCELERATION_MAX.value,
+        #                                   name="Acceleration"
+        #                                   )
+        self._acceleration = raw_acceleration
         return self._acceleration
+
+    @property
+    def braking_force(self) -> float:
+        """Calculates the total negative force applied to the vehicle."""
+        total_braking_force = self._brake.effectiveness * self._brake.brake_value
+        return total_braking_force
 
     @property
     def throttle(self) -> AThrottle:
@@ -167,16 +176,6 @@ class AVehicle(ABC):
     #     """Reduces speed due to natural forces when engine force is not actively overcoming them."""
     #     # friction, drag
     #     pass
-
-
-    def hamper_by_brake(self) -> None:
-        """Reduce speed according to brake intensity."""
-        delta = max(self._speed - self._brake.brake_value * self._brake.effectiveness, 0.0)
-        self._speed = clamp_value(value=delta,
-                                  min_value=self.Constants.SPEED_MIN.value,
-                                  max_value=self.Constants.SPEED_MAX.value,
-                                  name="Speed"
-                                  )
 
 
     def decrease_energy_volume(self):

@@ -14,12 +14,13 @@ class BasicBrake(ABrake):
     _brake_value = 0.0
 
     class Constants(Enum):
-        BRAKE_EFFECTIVENESS_MIN = 0.0
-        BRAKE_EFFECTIVENESS_MAX = 1.0
-        BRAKE_VALUE_MAX = 1.0
-        BRAKE_VALUE_MIN = 0.0
-        WEIGHT_MIN = 1.0
-        WEIGHT_MAX = 500.0
+        BRAKE_EFFECTIVENESS_MIN: float = 1.0
+        BRAKE_EFFECTIVENESS_MAX: float = 2000.0
+        BRAKE_STEP: float = 0.1
+        BRAKE_VALUE_MAX: float = 1.0
+        BRAKE_VALUE_MIN: float = 0.0
+        WEIGHT_MIN: float = 1.0
+        WEIGHT_MAX: float = 500.0
 
     @property
     def brake_effectiveness(self):
@@ -38,14 +39,14 @@ class BasicBrake(ABrake):
                                          name="Brake effectiveness")
 
     def engage_brake(self):
-        value: float = self._brake_value + self._effectiveness
+        value: float = self._brake_value + self.Constants.BRAKE_STEP.value
         self._brake_value = clamp_value(value=value,
                                         min_value=self.Constants.BRAKE_VALUE_MIN.value,
                                         max_value=self.Constants.BRAKE_VALUE_MAX.value,
                                         name="Brake value")
 
     def disengage_brake(self):
-        value: float = self._brake_value - self._effectiveness
+        value: float = self._brake_value - self.Constants.BRAKE_STEP.value
         self._brake_value = clamp_value(value=value,
                                         min_value=self.Constants.BRAKE_VALUE_MIN.value,
                                         max_value=self.Constants.BRAKE_VALUE_MAX.value,

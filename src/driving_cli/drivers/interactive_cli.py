@@ -1,7 +1,6 @@
 """File for InteractiveCli class."""
 from logging import Logger, getLogger
 import time
-import sys
 import readchar
 
 from driving_cli.entities.abstracts.abstract_dashboard import ADashboard
@@ -32,7 +31,7 @@ class InteractiveCli:
         self._key_actions = {
             readchar.key.UP: lambda vehicle: InteractiveCli.on_up_arrow(vehicle),
             readchar.key.DOWN: lambda vehicle: InteractiveCli.on_down_arrow(vehicle),
-            ' ': lambda vehicle: InteractiveCli.on_space_bar(vehicle),
+            readchar.key.SPACE: lambda vehicle: InteractiveCli.on_space_bar(vehicle),
             readchar.key.ESC: lambda: self.on_esc()
         }
 
@@ -59,22 +58,22 @@ class InteractiveCli:
             key = None
             try:
                 key = readchar.readkey()
+                print(key)
             except IOError:
                 pass
             except Exception as e:
                 if str(e) == "KeyboardInterrupt":
-                    break;
+                    break
 
             if key in self._key_actions:
                 self._key_actions[key](vehicle)
 
             vehicle.accelerate()
-            vehicle.hamper_by_brake()
             dashboard.print_throttle_status()
             dashboard.print_brake_status()
             dashboard.print_speed()
             dashboard.print_acceleration()
-
+            dashboard.print_combustion()
 
             log.info("Simulation time: %s", elapsed)
             counter += 1
@@ -83,19 +82,27 @@ class InteractiveCli:
 
     @staticmethod
     def on_up_arrow(vehicle: AVehicle):
-        log.info("Key: Up (Accelerate)")
+        message: str = "Key: Up (Accelerate)"
+        log.info(message)
+        print(message)
         vehicle.increase_throttle()
 
     @staticmethod
     def on_down_arrow(vehicle: AVehicle):
-        log.info("Key: Down (Decelerate)")
+        message: str = "Key: Down (Decelerate)"
+        log.info(message)
+        print(message)
         vehicle.decrease_throttle()
 
     @staticmethod
     def on_space_bar(vehicle: AVehicle):
-        log.info("Key: Space (Brake)")
-        vehicle.hamper_by_brake()
+        message: str = "Key: Space (Brake)"
+        log.info(message)
+        print(message)
+        vehicle.engage_brake()
 
     def on_esc(self):
-        log.info("Key: ESC (Quit)")
+        message: str = "Key: ESC (Quit)"
+        log.info(message)
+        print(message)
         self._simulation_running = False

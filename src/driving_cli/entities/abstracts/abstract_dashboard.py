@@ -34,3 +34,7 @@ class ADashboard(Observer, Generic[T], ABC):
     @abstractmethod
     def print_brake_status(self):
         pass
+
+    @abstractmethod
+    def print_combustion(self):
+        pass
