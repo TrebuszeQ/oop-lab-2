@@ -17,24 +17,31 @@ class BasicEngine(AEngine):
 
     class Constants(Enum):
         WEIGHT_MIN = 1.0
-        WEIGHT_MAX = 5000.0
-        FORCE_MAX = 10000
-        FORCE_MIN = 1
-        COMBUSTION_MIN: float = 0.1
+        WEIGHT_MAX = 1000.0
+        FORCE_MAX = 1000.0
+        FORCE_MIN = 0.0
+        POWER_OUTPUT_MAX = 1000.0
+        POWER_OUTPUT_MIN = 0.0
+        COMBUSTION_MIN: float = 0.0
         COMBUSTION_MAX: float = 100
+        TRANSMISSION_TORQUE_MULTIPLIER: float = 0.1
 
     @property
     def power_output(self) -> float:
         """Power output based on combustion efficiency."""
-        return self._force * self._combustion
+        return self._power_output
 
     @property
     def force(self) -> float:
-        return self._force
+        value: float = self.Constants.FORCE_MAX.value * self._power_output
+        log.info("New engine force: %s", value)
+        return value
 
     @property
     def combustion(self) -> float:
-        return self._combustion
+        value: float = self.Constants.COMBUSTION_MAX.value * self._power_output
+        log.info("New combustion: %s", value)
+        return value
 
     def __init__(self, weight: float = None, force: float = None, combustion: float = None):
         super().__init__(weight, force, combustion)
@@ -44,11 +51,11 @@ class BasicEngine(AEngine):
                                   name="Engine force")
         self._combustion = clamp_value(value=combustion,
                                        min_value=self.Constants.COMBUSTION_MIN.value,
-                                       max_value=self.Constants.COMBUSTION_MIN.value,
+                                       max_value=self.Constants.COMBUSTION_MAX.value,
                                        name="Engine combustion")
 
 
-    def increase_combustion(self, throttle_value: float, transmission_ratio: float) -> None:
+    def increase_power_output(self, throttle_value: float, transmission_ratio: float) -> None:
         """
         Adjusts combustion intensity based on throttle and transmission rate.
         With combustion engine force changes.
@@ -56,27 +63,20 @@ class BasicEngine(AEngine):
         :param throttle_value: Status of throttle input.
         :param transmission_ratio: Torque multiplier.
         """
-        log.info("Increasing combustion.")
-        if throttle_value < 0 or throttle_value > 1:
-            log.warning("Throttle status out of 0-1 range: %s", throttle_value)
-            throttle_value = max(0.0, min(1.0, throttle_value))
+        log.info("Increasing power output.")
 
-        delta = throttle_value * (1 + transmission_ratio * 0.1)
-        new_combustion = self._combustion + delta
-        self._combustion = clamp_value(value=new_combustion,
-                                       min_value=self.Constants.COMBUSTION_MIN.value,
-                                       max_value=self.Constants.COMBUSTION_MIN.value,
-                                       name="Engine combustion")
-
-        self._update_force()
-        log.info("New combustion: %s", new_combustion)
-
-    def _update_force(self):
-        """Updates force value bases on combustion."""
-        k: float = self.Constants.FORCE_MAX.value / self.Constants.COMBUSTION_MAX.value
-        delta: float = self._combustion * k
-        self._force = clamp_value(value=delta,
+        desired_output = throttle_value * (1.0 + transmission_ratio * self.Constants.TRANSMISSION_TORQUE_MULTIPLIER.value)
+        final_output_level = clamp_value(value=desired_output,
+                                       min_value=self.Constants.POWER_OUTPUT_MIN.value,
+                                       max_value=self.Constants.POWER_OUTPUT_MAX.value,
+                                       name="Engine power output")
+        self._power_output = final_output_level
+        self._force = clamp_value(value=self.force,
+                                  min_value=self.Constants.FORCE_MIN.value,
+                                  max_value=self.Constants.FORCE_MAX.value,
+                                  name="Engine force")
+        self._combustion = clamp_value(value=self.combustion,
                                   min_value=self.Constants.COMBUSTION_MIN.value,
-                                  max_value=self.Constants.COMBUSTION_MIN.value,
+                                  max_value=self.Constants.COMBUSTION_MAX.value,
                                   name="Engine combustion")
-
+        log.info("New power output: %s", self._power_output)

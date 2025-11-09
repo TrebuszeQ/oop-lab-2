@@ -49,7 +49,6 @@ class BasicTransmission(ATransmission):
         self._ratios: MutableSequence[float] = self._validate_ratios(ratios or self._generate_default_ratios())
         self._current_gear: int = 0
 
-    @abstractmethod
     def shift_up(self) -> None:
         """Shifts to a higher gear."""
         log.info("Shifting up")
@@ -59,7 +58,6 @@ class BasicTransmission(ATransmission):
         else:
             log.info("Already on the highest gear: %s", self._current_gear)
 
-    @abstractmethod
     def shift_down(self) -> None:
         """Shifts to a lower gear."""
         log.info("Shifting down")
@@ -68,14 +66,12 @@ class BasicTransmission(ATransmission):
         else:
             log.info("Already on the lowest gear: %s", self._current_gear)
 
-    @abstractmethod
     def update_ratio(self) -> None:
         """Updates gear transmission ratio."""
 
         self._ratio = self._ratios[self._current_gear]
         log.info("Current gears ratio: %s", self._ratio)
 
-    @abstractmethod
     def _generate_default_ratios(self) -> MutableSequence[float]:
         """Generates default evenly spaced gear rations."""
         max_ratio: float = self.Constants.RATIO_MAX.value
@@ -86,7 +82,6 @@ class BasicTransmission(ATransmission):
         ratios: list[float] = [round(max_ratio - step * i, 2) for i in range(gears)]
         return array('d', ratios)
 
-    @abstractmethod
     def _validate_ratios(self, ratios: list[float]) -> MutableSequence[float]:
         """Validates all ratios are within valid range."""
         valid_ratios: MutableSequence[float] = array('d')

@@ -14,12 +14,16 @@ class AEngine(AVehiclePart, ABC):
     _power_output: float = 0.0
 
     class Constants(Enum):
-        WEIGHT_MIN = 1.0
-        WEIGHT_MAX = 5000.0
-        FORCE_MAX = 10000
-        FORCE_MIN = 1
-        COMBUSTION_MIN: float = 0.1
-        COMBUSTION_MAX: float = 100
+        WEIGHT_MIN = 0.0
+        WEIGHT_MAX = 0.0
+        FORCE_MAX = 0.0
+        FORCE_MIN = 0.0
+        POWER_OUTPUT_MAX = 0.0
+        POWER_OUTPUT_MIN = 0.0
+        COMBUSTION_MIN: float = 0.0
+        COMBUSTION_MAX: float = 0.0
+        TRANSMISSION_TORQUE_MULTIPLIER: float = 0.0
+
 
     @property
     def power_output(self) -> float:
@@ -42,14 +46,10 @@ class AEngine(AVehiclePart, ABC):
                                   name="Engine force")
         self._combustion = clamp_value(value=combustion,
                                        min_value=self.Constants.COMBUSTION_MIN.value,
-                                       max_value=self.Constants.COMBUSTION_MIN.value,
+                                       max_value=self.Constants.COMBUSTION_MAX.value,
                                        name="Engine combustion")
 
 
     @abstractmethod
-    def increase_combustion(self, throttle_value: float, transmission_ratio: float) -> None:
-        pass
-
-    @abstractmethod
-    def _update_force(self):
+    def increase_power_output(self, throttle_value: float, transmission_ratio: float) -> None:
         pass
