@@ -1,4 +1,4 @@
-"""File for FuelTank class."""
+"""File for AbstractFuelTank class."""
 from logging import Logger, getLogger
 from enum import Enum
 
@@ -7,7 +7,7 @@ from driving_cli.entities.abstracts.abstract_energy_provider import AEnergyProvi
 log: Logger = getLogger(__name__)
 
 
-class FuelTank(AEnergyProvider):
+class AFuelTank(AEnergyProvider):
     class Constants(Enum):
         WEIGHT_MIN = 100.0
         WEIGHT_MAX = 5000.0

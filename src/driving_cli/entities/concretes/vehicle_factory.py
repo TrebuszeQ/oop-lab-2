@@ -2,9 +2,8 @@
 from logging import Logger, getLogger
 
 from driving_cli.entities.abstracts.abstract_transmission import ATransmission
-from driving_cli.entities.concretes.fuel_car import FuelCar
 from driving_cli.entities.abstracts.abstract_engine import AEngine
-from driving_cli.entities.concretes.fuel_tank import FuelTank
+from driving_cli.entities.abstracts.abstract_fuel_tank import FuelTank
 from driving_cli.entities.abstracts.abstract_throttle import AThrottle
 from driving_cli.entities.abstracts.abstract_brake import ABrake
 
@@ -37,66 +36,23 @@ class VehicleFactory:
     #                                           throttle=throttle,
     #                                           brake=brake)
 
-    @staticmethod
-    def produce_fuel_car_and_parts(
-            throttle_weight: float,
-            throttle_step: float,
-            brake_weight: float,
-            brake_effectiveness: float,
-            engine_weight: float,
-            engine_force: float,
-            combustion: float,
-            fuel_tank_weight: float,
-            fuel_tank_max_volume: float,
-            transmission_weight: float,
-            transmission_ratios: list[float] = None
-    ) -> FuelCar:
-        """
-        Creates and returns FuelCar instance and its parts.
-        :param throttle_weight: Weight of the throttle.
-        :param throttle_step: Throttle step value.
-        :param brake_weight: Weight of the brakes.
-        :param brake_effectiveness: Effectiveness of the brakes.
-        :param engine_weight: Weight of the engine.
-        :param engine_force: Force of the engine.
-        :param combustion: Combustion of the engine.
-        :param fuel_tank_weight: Weight of the fuel tank.
-        :param fuel_tank_max_volume: Maximum volume of the fuel tank.
-        :param transmission_weight: Weight of the transmission.
-        :param transmission_ratios: Ratios of the transmission. If None, defaults would be generated.
-        :return: Instance of the FuelCar.
-        """
-        log.info("Producing FuelCar and it's parts.")
-        return FuelCar(
-            throttle=AThrottle(weight=throttle_weight,
-                               step=throttle_step),
-            brake=ABrake(weight=brake_weight,
-                         effectiveness=brake_effectiveness),
-            engine=AEngine(weight=engine_weight,
-                           force=engine_force,
-                           combustion=combustion),
-            fuel_tank=FuelTank(weight=fuel_tank_weight,
-                               max_volume=fuel_tank_max_volume),
-            transmission=ATransmission(weight=transmission_weight,
-                                       ratios=transmission_ratios)
-        )
 
     @staticmethod
     def produce_fuel_car_from_parts(
-                    throttle: AThrottle = None,
-                    brake: ABrake = None,
-                    engine: AEngine = None,
-                    fuel_tank: FuelTank = None,
-                    transmission: ATransmission = None
+                    throttle: AThrottle,
+                    brake: ABrake,
+                    engine: AEngine,
+                    fuel_tank: FuelTank,
+                    transmission: ATransmission
     ) -> FuelCar:
         """
         Creates and returns a Car instance with provided parts, or instantiates parts with default None.
-        :param throttle: Throttle instance or None for defaults.
-        :param brake: Brake instance or None for the defaults.
-        :param engine: Engine instance or None for the defaults.
-        :param fuel_tank: FuelTank instance or None for the defaults.
-        :param fuel_tank: Transmission instance or None for the defaults.
-        :param transmission: Transmission instance or None for the defaults.
+        :param throttle: Throttle instance.
+        :param brake: Brake instance.
+        :param engine: Engine instance.
+        :param fuel_tank: FuelTank instance.
+        :param fuel_tank: Transmission instance.
+        :param transmission: Transmission instance.
         :return: Instance of the FuelCar.
         """
         log.info("Producing FuelCar")

@@ -4,9 +4,14 @@ from curses import wrapper, noecho, initscr, napms, KEY_UP, KEY_DOWN
 from typing import Type
 
 from driving_cli.entities.abstracts.abstract_vehicle import AVehicle
+from driving_cli.entities.concretes.basic.basic_brake import BasicBrake
+from driving_cli.entities.concretes.basic.basic_engine import BasicEngine
+from driving_cli.entities.concretes.basic.basic_throttle import BasicThrottle
+from driving_cli.entities.concretes.basic.basic_transmission import BasicTransmission
 from driving_cli.entities.concretes.dashboard import Dashboard
-from driving_cli.entities.concretes.fuel_car import FuelCar
+from driving_cli.entities.abstracts.absract_fuel_car import FuelCar
 from driving_cli.drivers.cli_steering import CliSteering
+from driving_cli.entities.abstracts.abstract_fuel_tank import FuelTank
 from driving_cli.entities.concretes.vehicle_factory import VehicleFactory
 
 log: Logger = getLogger(__name__)
@@ -33,18 +38,21 @@ def real_time_loop(dt: float):
 
     # choose type of vehicle
     vehicle_factory = VehicleFactory()
-    fuel_car: FuelCar = vehicle_factory.produce_fuel_car_and_parts(throttle_weight=200,
-                                                                   throttle_step=0.2,
-                                                                   brake_weight=200,
-                                                                   brake_effectiveness=0.3,
-                                                                   engine_weight=500,
-                                                                   engine_force=100,
-                                                                   combustion=10,
-                                                                   fuel_tank_weight=200,
-                                                                   fuel_tank_max_volume=200,
-                                                                   transmission_weight=200,
-                                                                   transmission_ratios=None
-                                                                   )
+    fuel_car: FuelCar = (vehicle_factory.produce_fuel_car_from_parts(
+        throttle=BasicThrottle(weight = 200,
+                               step = 0.1),
+        brake=BasicBrake(weight=200,
+                         effectiveness=0.1),
+        engine=BasicEngine(weight=1000,
+                           force=100,
+                           combustion=10),
+        fuel_tank=FuelTank(weight=200,
+                           max_volume=50),
+        transmission=BasicTransmission(
+            weight=200,
+            ratios=None
+        ))
+    )
     dashboard: Dashboard[FuelCar] = Dashboard()
 
     while True:

@@ -1,7 +1,10 @@
 """File for Car class and its complements."""
-from abc import ABC
+from abc import ABC, abstractmethod
+from logging import Logger, getLogger
 from enum import Enum
 from typing import Type
+
+log: Logger = getLogger(__name__)
 
 from driving_cli.entities.abstracts.abstract_transmission import ATransmission
 from driving_cli.entities.abstracts.abstract_throttle import AThrottle
@@ -93,49 +96,47 @@ class AVehicle(ABC):
     # classify_by_weight()
     # vehicle_types
 
-    @abs
-    def constants(cls):
-        return cls.Constants
+    def constants(self):
+        return self.Constants
 
-    @classmethod
-    def increase_throttle(cls) -> None:
+
+    def increase_throttle(self) -> None:
         """Increases vehicle throttle instance throttle value and resets brake."""
-        cls._brake.reset_brake()
-        cls._throttle.increase_throttle()
+        self._brake.reset_brake()
+        self._throttle.increase_throttle()
 
-    @classmethod
-    def decrease_throttle(cls) -> None:
+
+    def decrease_throttle(self) -> None:
         """Increases vehicle throttle instance throttle value."""
-        cls._throttle.decrease_throttle()
+        self._throttle.decrease_throttle()
 
-    @classmethod
-    def engage_brake(cls) -> None:
+
+    def engage_brake(self) -> None:
         """Increase vehicle brake instance brake value and reset throttle."""
-        cls._throttle.reset_throttle()
-        cls._brake.engage_brake()
+        self._throttle.reset_throttle()
+        self._brake.engage_brake()
 
-    @classmethod
-    def disengage_brake(cls) -> None:
+
+    def disengage_brake(self) -> None:
         """Decrease vehicle brake instance brake value."""
-        cls._brake.disengage_brake()
+        self._brake.disengage_brake()
 
     # @abstractmethod
     # def drive(self) -> None:
     #     """Subclasses must implement driving logic."""
     #     pass
 
-    @classmethod
-    def accelerate(cls) -> None:
+    def accelerate(self) -> None:
         """Increases speed using throttle and engine force and gear_ratio."""
-        gear_ratio: float = cls._transmission.ratio
-        throttle_value: float = cls._throttle.throttle_value
-        cls._engine.increase_combustion(throttle_value, gear_ratio)
-        new_speed: float = cls._acceleration + cls._speed
-        cls._speed = clamp_value(value=new_speed,
-                                 min_value=cls.Constants.SPEED_MIN.value,
-                                 max_value=cls.Constants.SPEED_MAX.value,
-                                 name="Speed"
-                                 )
+        gear_ratio: float = self._transmission.ratio
+        throttle_value: float = self._throttle.throttle_value
+        self._engine.increase_combustion(throttle_value, gear_ratio)
+        new_speed: float = self._acceleration + self._speed
+        self._speed = clamp_value(value=new_speed,
+                                  min_value=self.Constants.SPEED_MIN.value,
+                                  max_value=self.Constants.SPEED_MAX.value,
+                                  name="Speed"
+                                  )
 
     # @abstractmethod
     # def hamper_by_frictions(self) -> None:
@@ -143,19 +144,19 @@ class AVehicle(ABC):
     #     # friction, drag
     #     pass
 
-    @classmethod
-    def hamper_by_brake(cls) -> None:
-        """Reduce speed according to brake intensity."""
-        delta = max(cls._speed - cls._brake.brake_value * cls._brake.effectiveness, 0.0)
-        cls._speed = clamp_value(value=delta,
-                                 min_value=cls.Constants.SPEED_MIN.value,
-                                 max_value=cls.Constants.SPEED_MAX.value,
-                                 name="Speed"
-                                 )
 
-    @classmethod
-    def decrease_energy_volume(cls):
+    def hamper_by_brake(self) -> None:
+        """Reduce speed according to brake intensity."""
+        delta = max(self._speed - self._brake.brake_value * self._brake.effectiveness, 0.0)
+        self._speed = clamp_value(value=delta,
+                                  min_value=self.Constants.SPEED_MIN.value,
+                                  max_value=self.Constants.SPEED_MAX.value,
+                                  name="Speed"
+                                  )
+
+
+    def decrease_energy_volume(self):
         """Reduces volume of energy provider by engine combustion."""
         log.info("Decreasing energy volume")
-        value: float = min(cls._energy_provider.volume - cls._engine.combustion, 0.0)
-        cls._energy_provider.volume = value
+        value: float = min(self._energy_provider.volume - self._engine.combustion, 0.0)
+        self._energy_provider.volume = value
